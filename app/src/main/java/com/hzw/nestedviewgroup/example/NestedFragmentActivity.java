@@ -67,8 +67,7 @@ public class NestedFragmentActivity extends AppCompatActivity implements View.On
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new WebViewClient());
         webView.setWebChromeClient(new WebChromeClient());
-//        webView.loadUrl("https://36kr.com/p/5180329.html");
-        webView.loadUrl("https://github.com/tencent/mmkv");
+        webView.loadUrl("https://github.com/HzwSunshine/NestedWebViewRecyclerViewGroup");
     }
 
     @Override
