@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".NestedActivity">
+
+    <com.hzw.nestedviewgroup.NestedWebViewRecyclerViewGroup
+        android:id="@+id/nest_parent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:changeDuration="300"
+        app:scrollbarColor="@color/colorAccent"
+        app:scrollbarEnable="true">
+
+        <com.hzw.nestedviewgroup.NestedScrollWebView
+            android:id="@+id/nest_webView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </com.hzw.nestedviewgroup.NestedScrollWebView>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/nest_rv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </android.support.v7.widget.RecyclerView>
+    </com.hzw.nestedviewgroup.NestedWebViewRecyclerViewGroup>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#E0E0E0" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_gravity="bottom"
+        android:background="#ffffff"
+        android:visibility="visible">
+
+        <EditText
+            android:id="@+id/et_comment"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textColor="#E0E0E0"
+            android:textSize="14sp" />
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="#E0E0E0" />
+
+        <TextView
+            android:id="@+id/tv_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:text="评论"
+            android:textColor="#333333"
+            android:textSize="12sp" />
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="#E0E0E0" />
+
+        <TextView
+            android:id="@+id/tv_last_read"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:text="上次阅读"
+            android:textColor="#333333"
+            android:textSize="12sp" />
+    </LinearLayout>
+</LinearLayout>

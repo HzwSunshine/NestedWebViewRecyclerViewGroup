@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="NestedWebViewRecyclerViewGroup">
+        <attr name="changeDuration" format="integer" />
+        <attr name="scrollbarEnable" format="boolean" />
+        <attr name="scrollbarColor" format="color" />
+        <attr name="scrollbarMinHeight" format="dimension" />
+        <attr name="scrollbarWidth" format="dimension" />
+        <attr name="scrollbarMarginRight" format="dimension" />
+    </declare-styleable>
+</resources>
