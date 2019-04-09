@@ -47,6 +47,8 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
     private int currentScrollType;
     private int rvContentHeight;
     private int maximumVelocity;
+    //WebView的初始高度
+    private int initTopHeight;
     private int topHeight;
 
     //是否在上下切换滑动中...
@@ -107,10 +109,6 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
         int right = getPaddingRight();
         int count = getChildCount();
         int parentSpace = measureHeight - getPaddingTop() - getPaddingBottom();
-        if (topHeight == 0) {
-            //WebView控件的初始高度为父控件高度
-            topHeight = parentSpace;
-        }
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
             //将两个子View的高度设置成父控件高度
@@ -122,7 +120,7 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
                 //scrollBar的测量高度为整个父控件的初始高度
                 childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(parentSpace, MeasureSpec.EXACTLY);
                 params.height = parentSpace;
-            } else if (child instanceof NestedScrollWebView && topHeight < parentSpace) {
+            } else if (child instanceof NestedScrollWebView && topHeight < initTopHeight) {
                 //WebView重新设置的高度不满一屏
                 childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(topHeight, MeasureSpec.EXACTLY);
                 params.height = topHeight;
@@ -162,6 +160,13 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
             View child = getChildAt(i);
             if (child instanceof NestedScrollWebView) {
                 webView = (NestedScrollWebView) child;
+                post(new Runnable() {
+                    @Override
+                    public void run() {
+                        topHeight = webView.getHeight();
+                        initTopHeight = topHeight;
+                    }
+                });
             } else if (child instanceof RecyclerView) {
                 recyclerView = (RecyclerView) child;
             } else if (child instanceof ViewGroup) {
