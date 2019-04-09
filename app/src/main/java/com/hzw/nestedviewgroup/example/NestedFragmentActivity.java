@@ -44,7 +44,7 @@ public class NestedFragmentActivity extends AppCompatActivity implements View.On
         //当你的评论的 RecyclerView 在一个Fragment中时，有两种方式可以将 RecyclerView
         //和 NestedWebViewRecyclerViewGroup 关联起来
 
-        //1. 在 NestedWebViewRecyclerViewGroup 的内部如果在解析布局文件时，没有找到 RecyclerView ，
+        //1. 在 NestedWebViewRecyclerViewGroup 的内部如果在解析布局文件时，如果没有找到 RecyclerView ，
         //那么在界面显示时会尝试重新获取 RecyclerView ，这种情况不需要你再做额外的事情
 
         //2. 如果你还有更特殊的用法，当 NestedWebViewRecyclerViewGroup 在界面显示时都无法获取到 RecyclerView
