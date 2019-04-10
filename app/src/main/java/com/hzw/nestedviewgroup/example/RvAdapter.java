@@ -20,6 +20,10 @@ public class RvAdapter extends RecyclerView.Adapter {
     private List<Entity> list = new ArrayList<>();
 
     RvAdapter() {
+        Entity image = new Entity();
+        image.type = Entity.IMAGE;
+        list.add(image);
+
         Entity title = new Entity();
         title.type = Entity.DIVIDER;
         title.title = "相关描述";
@@ -37,7 +41,7 @@ public class RvAdapter extends RecyclerView.Adapter {
         title2.title = "评论区";
         list.add(title2);
 
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < 8; i++) {
             Entity entity2 = new Entity();
             entity2.type = Entity.COMMENT;
             entity2.title = String.format("%s. NestedWebViewRecyclerViewGroup一个RecyclerView和WebView的嵌套控件，一般用于文章详情页的结构中，解决RecyclerView和WebView滑动时的无缝衔接！", i + 1);
@@ -50,6 +54,8 @@ public class RvAdapter extends RecyclerView.Adapter {
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
         switch (viewType) {
+            case Entity.IMAGE:
+                return new ImageHolder(inflater.inflate(R.layout.item_image, viewGroup, false));
             case Entity.ABOUT:
                 return new AboutHolder(inflater.inflate(R.layout.item_about, viewGroup, false));
             case Entity.COMMENT:
@@ -115,6 +121,13 @@ public class RvAdapter extends RecyclerView.Adapter {
         CommentHolder(@NonNull View itemView) {
             super(itemView);
             comment = itemView.findViewById(R.id.comment_text);
+        }
+    }
+
+    private static class ImageHolder extends RecyclerView.ViewHolder {
+
+        ImageHolder(@NonNull View itemView) {
+            super(itemView);
         }
     }
 

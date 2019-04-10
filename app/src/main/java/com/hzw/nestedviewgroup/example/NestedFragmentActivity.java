@@ -74,7 +74,7 @@ public class NestedFragmentActivity extends AppCompatActivity implements View.On
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_comment:
-                parent.scrollToNextView(6);
+                parent.scrollToNextView(7);
                 break;
             case R.id.tv_last_read:
                 int last = ReadUtil.getRead(this);
