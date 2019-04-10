@@ -99,7 +99,7 @@ setRecyclerView(RecyclerView recyclerView)
 
 
 
-**使用时有以下的注意点**：
+**使用时请注意**：
 1. 请为使用到该控件的 Activity 设置以下主题，避免ActionMode向下挤压布局，造成该控件的高度发生变化
 ```xml
     <item name="windowActionModeOverlay">true</item>
@@ -109,7 +109,7 @@ setRecyclerView(RecyclerView recyclerView)
 和 RecyclerView 或包含 RecyclerView 的ViewGroup
 
 
-</br></br></br>
+</br></br>
 
 License
 -------
