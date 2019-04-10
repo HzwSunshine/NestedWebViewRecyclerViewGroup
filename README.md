@@ -24,7 +24,7 @@ NestedWebViewRecyclerViewGroup 是 WebView 和 RecyclerView 的嵌套控件，�
 ## 使用
 
 **为了使用方便定义了以下一些属性**：
-```
+```xml
 //WebView和RecyclerView上下切换的时间
 <attr name="changeDuration" format="integer" /> 
 //scrollbar是否可用
@@ -42,7 +42,7 @@ NestedWebViewRecyclerViewGroup 是 WebView 和 RecyclerView 的嵌套控件，�
 
 **xml**
     
-```
+```xml
     <com.hzw.nestedviewgroup.NestedWebViewRecyclerViewGroup
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -66,7 +66,7 @@ NestedWebViewRecyclerViewGroup 是 WebView 和 RecyclerView 的嵌套控件，�
 
 **code**
 
-```
+```java
 //WebView的内容高度不满一屏时，手动设置正确高度
 setWebViewContentHeight(int height) ; 
 
@@ -101,7 +101,7 @@ setRecyclerView(RecyclerView recyclerView)
 
 **使用时有以下的注意点**：
 1. 请为使用到该控件的 Activity 设置以下主题，避免ActionMode向下挤压布局，造成该控件的高度发生变化
-```
+```xml
     <item name="windowActionModeOverlay">true</item>
     <item name="android:windowActionModeOverlay">true</item>
 ```
