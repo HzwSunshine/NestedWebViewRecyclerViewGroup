@@ -13,11 +13,8 @@ NestedWebViewRecyclerViewGroup 是 WebView 和 RecyclerView 的嵌套控件，�
 
      compile 'com.github.hzw:NestedWebViewRecyclerViewGroup:'DownLoad Versiokn''
 
-
-*NestedWebViewRecyclerViewGroup中使用了com.android.support:xxx:28.0.0，如果需要使用你项目中的版本，可用以下方式：*
-
-    compile ("com.github.hzw:NestedWebViewRecyclerViewGroup:"DownLoad Versiokn""){ 
-            exclude group:'com.android.support' }
+     所需依赖：com.android.support:support-v4:xxx
+                    com.android.support:recyclerview-v7:xxx
 
 </br>
 
