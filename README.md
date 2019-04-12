@@ -40,24 +40,24 @@ NestedWebViewRecyclerViewGroup 是 WebView 和 RecyclerView 的嵌套控件，�
 **xml**
     
 ```xml
-    <com.hzw.nestedviewgroup.NestedWebViewRecyclerViewGroup
+    <com.hzw.nested.NestedWebViewRecyclerViewGroup
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:changeDuration="300"
         app:scrollbarColor="#000000"
         app:scrollbarEnable="true">
 
-        <com.hzw.nestedviewgroup.NestedScrollWebView
+        <com.hzw.nested.NestedScrollWebView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-        </com.hzw.nestedviewgroup.NestedScrollWebView>
+        </com.hzw.nested.NestedScrollWebView>
 
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
         </android.support.v7.widget.RecyclerView>
         
-    </com.hzw.nestedviewgroup.NestedWebViewRecyclerViewGroup>
+    </com.hzw.nested.NestedWebViewRecyclerViewGroup>
 ```
 
 
