@@ -80,7 +80,7 @@ getWebViewScrollY()
 scrollToPosition(int y)
 
 //WebView和RecyclerView区域的上下切换
-scrollToNextView(int rvPosition)
+switchView(int rvPosition)
 
 
 //当你的 RecyclerView 不在当前布局中时，有两种方式可以将 RecyclerView
