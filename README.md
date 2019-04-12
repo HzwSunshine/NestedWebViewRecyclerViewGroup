@@ -11,7 +11,7 @@ NestedWebViewRecyclerViewGroup 是 WebView 和 RecyclerView 的嵌套控件，�
 
 ##  Gradle
 
-     compile 'com.github.hzw:NestedWebViewRecyclerViewGroup:'DownLoad Versiokn''
+     compile 'com.github.hzw:NestedWebViewRecyclerViewGroup:'DownLoad Version''
 
      所需依赖：com.android.support:support-v4:xxx
              com.android.support:recyclerview-v7:xxx
