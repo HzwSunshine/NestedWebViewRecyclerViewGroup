@@ -1,4 +1,4 @@
-package com.hzw.nestedviewgroup;
+package com.hzw.nested;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -527,6 +527,9 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
      * 获取当前WebView的滑动距离
      */
     public int getWebViewScrollY() {
+        if (getScrollY() == topHeight) {
+            return getWebViewContentHeight() - webView.getHeight();
+        }
         return webView.getScrollY();
     }
 
@@ -553,7 +556,7 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
      *
      * @param rvPosition 切换到RecyclerView时需要定位到的位置
      */
-    public void scrollToNextView(int rvPosition) {
+    public void switchView(int rvPosition) {
         if (isChangingToNext) {
             return;
         }

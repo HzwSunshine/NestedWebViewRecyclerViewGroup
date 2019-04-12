@@ -8,7 +8,7 @@
     tools:context=".NestedFragmentActivity">
 
 
-    <com.hzw.nestedviewgroup.NestedWebViewRecyclerViewGroup
+    <com.hzw.nested.NestedWebViewRecyclerViewGroup
         android:id="@+id/nest_parent"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -17,12 +17,12 @@
         app:scrollbarColor="@color/colorAccent"
         app:scrollbarEnable="true">
 
-        <com.hzw.nestedviewgroup.NestedScrollWebView
+        <com.hzw.nested.NestedScrollWebView
             android:id="@+id/nest_webView"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        </com.hzw.nestedviewgroup.NestedScrollWebView>
+        </com.hzw.nested.NestedScrollWebView>
 
         <FrameLayout
             android:id="@+id/fragment_container"
@@ -30,7 +30,7 @@
             android:layout_height="match_parent">
 
         </FrameLayout>
-    </com.hzw.nestedviewgroup.NestedWebViewRecyclerViewGroup>
+    </com.hzw.nested.NestedWebViewRecyclerViewGroup>
 
     <View
         android:layout_width="match_parent"

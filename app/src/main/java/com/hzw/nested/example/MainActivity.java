@@ -1,4 +1,4 @@
-package com.hzw.nestedviewgroup.example;
+package com.hzw.nested.example;
 
 import android.content.Intent;
 import android.os.Bundle;

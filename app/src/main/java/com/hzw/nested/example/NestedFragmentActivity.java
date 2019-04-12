@@ -1,4 +1,4 @@
-package com.hzw.nestedviewgroup.example;
+package com.hzw.nested.example;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -11,7 +11,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
 
-import com.hzw.nestedviewgroup.NestedWebViewRecyclerViewGroup;
+import com.hzw.nested.NestedWebViewRecyclerViewGroup;
 
 public class NestedFragmentActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -74,7 +74,7 @@ public class NestedFragmentActivity extends AppCompatActivity implements View.On
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_comment:
-                parent.scrollToNextView(7);
+                parent.switchView(7);
                 break;
             case R.id.tv_last_read:
                 int last = ReadUtil.getRead(this);

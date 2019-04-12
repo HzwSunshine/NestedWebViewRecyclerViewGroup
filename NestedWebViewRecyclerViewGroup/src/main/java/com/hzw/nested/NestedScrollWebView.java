@@ -1,4 +1,4 @@
-package com.hzw.nestedviewgroup;
+package com.hzw.nested;
 
 import android.content.Context;
 import android.support.annotation.Nullable;

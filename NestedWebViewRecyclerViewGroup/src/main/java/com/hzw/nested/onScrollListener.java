@@ -1,4 +1,4 @@
-package com.hzw.nestedviewgroup;
+package com.hzw.nested;
 
 /**
  * author: hzw

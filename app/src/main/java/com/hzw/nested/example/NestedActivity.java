@@ -1,4 +1,4 @@
-package com.hzw.nestedviewgroup.example;
+package com.hzw.nested.example;
 
 import android.annotation.SuppressLint;
 import android.support.v7.app.AppCompatActivity;
@@ -9,10 +9,9 @@ import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.EditText;
 import android.widget.TextView;
 
-import com.hzw.nestedviewgroup.NestedWebViewRecyclerViewGroup;
+import com.hzw.nested.NestedWebViewRecyclerViewGroup;
 
 public class NestedActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -57,7 +56,7 @@ public class NestedActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_comment:
-                parent.scrollToNextView(7);
+                parent.switchView(7);
                 break;
             case R.id.tv_last_read:
                 int last = ReadUtil.getRead(this);

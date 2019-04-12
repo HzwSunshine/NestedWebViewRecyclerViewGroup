@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:context=".NestedActivity">
 
-    <com.hzw.nestedviewgroup.NestedWebViewRecyclerViewGroup
+    <com.hzw.nested.NestedWebViewRecyclerViewGroup
         android:id="@+id/nest_parent"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -16,12 +16,12 @@
         app:scrollbarColor="@color/colorAccent"
         app:scrollbarEnable="true">
 
-        <com.hzw.nestedviewgroup.NestedScrollWebView
+        <com.hzw.nested.NestedScrollWebView
             android:id="@+id/nest_webView"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        </com.hzw.nestedviewgroup.NestedScrollWebView>
+        </com.hzw.nested.NestedScrollWebView>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/nest_rv"
@@ -29,7 +29,7 @@
             android:layout_height="match_parent">
 
         </android.support.v7.widget.RecyclerView>
-    </com.hzw.nestedviewgroup.NestedWebViewRecyclerViewGroup>
+    </com.hzw.nested.NestedWebViewRecyclerViewGroup>
 
     <View
         android:layout_width="match_parent"

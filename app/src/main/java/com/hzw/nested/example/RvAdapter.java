@@ -1,4 +1,4 @@
-package com.hzw.nestedviewgroup.example;
+package com.hzw.nested.example;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
