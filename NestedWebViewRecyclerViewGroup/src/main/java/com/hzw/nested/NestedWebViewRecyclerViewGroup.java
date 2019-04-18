@@ -52,7 +52,7 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
     private int topHeight;
 
     //是否在上下切换滑动中...
-    private boolean isChangingToNext;
+    private boolean isSwitching;
     private boolean hasFling;
 
 
@@ -214,7 +214,7 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
      */
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
-        if (isChangingToNext) {
+        if (isSwitching) {
             return true;
         }
         int pointCount = event.getPointerCount();
@@ -419,7 +419,7 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
                 case SCROLL_NEXT://上下切换
                     scrollTo(0, currY);
                     invalidate();
-                    isChangingToNext = !scroller.isFinished();
+                    isSwitching = !scroller.isFinished();
                     break;
                 case SCROLL_PARENT_RV://WebView向父控件向RecyclerView滑动
                     scrollTo(0, currY);
@@ -557,7 +557,7 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
      * @param rvPosition 切换到RecyclerView时需要定位到的位置
      */
     public void switchView(int rvPosition) {
-        if (isChangingToNext) {
+        if (isSwitching) {
             return;
         }
         resetScroller();
@@ -565,7 +565,7 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
             webView.stopScroll();
         }
         currentScrollType = SCROLL_NEXT;
-        isChangingToNext = true;
+        isSwitching = true;
         if (getScrollY() == 0) {//滑向Bottom
             rvScrollToPosition(rvPosition);
             scroller.startScroll(0, 0, 0, topHeight, changeDuration);
