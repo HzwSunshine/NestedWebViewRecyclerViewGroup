@@ -26,13 +26,13 @@ import android.widget.Scroller;
 public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedScrollingParent2 {
 
     //WebView向RecyclerView滑动
-    private static final int SCROLL_PARENT_RV = 0;
+    private static final int SCROLL_WEB_PARENT = 0;
     //父控件向WebView滑动，位于父控件的dispatchTouchEvent事件中
     private static final int SCROLL_PARENT_WEB = 1;
     //RecyclerView向父控件滑动，位于RecyclerView的fling事件中
     private static final int SCROLL_RV_PARENT = 2;
     //上下切换
-    private static final int SCROLL_NEXT = 3;
+    private static final int SCROLL_SWITCH = 3;
 
     private NestedScrollingParentHelper helper;
     private VelocityTracker velocityTracker;
@@ -54,6 +54,7 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
     //是否在上下切换滑动中...
     private boolean isSwitching;
     private boolean hasFling;
+    private boolean isRvFlingDown;
 
 
     public NestedWebViewRecyclerViewGroup(Context context) {
@@ -202,6 +203,9 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
         }
     }
 
+    /**
+     * 特殊的布局中，如果无法获取到RecyclerView，请手动设置
+     */
     public void setRecyclerView(RecyclerView recyclerView) {
         if (this.recyclerView != null) {
             return;
@@ -226,6 +230,7 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
                 webViewContentHeight = 0;
                 rvContentHeight = 0;
                 hasFling = false;
+                isRvFlingDown = false;
                 initOrResetVelocityTracker();
                 resetScroller();
                 dealWithError();
@@ -240,7 +245,7 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
                     //处理连接处的父控件fling事件
                     velocityTracker.computeCurrentVelocity(1000, maximumVelocity);
                     int yVelocity = (int) -velocityTracker.getYVelocity();
-                    currentScrollType = yVelocity > 0 ? SCROLL_PARENT_RV : SCROLL_PARENT_WEB;
+                    currentScrollType = yVelocity > 0 ? SCROLL_WEB_PARENT : SCROLL_PARENT_WEB;
                     recycleVelocityTracker();
                     parentFling(yVelocity);
                 }
@@ -322,12 +327,14 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
     public boolean onNestedPreFling(@NonNull View target, float velocityX, float velocityY) {
         if (target instanceof NestedScrollWebView) {
             //WebView滑到底部时，继续向下滑动父控件和RV
-            currentScrollType = SCROLL_PARENT_RV;
+            currentScrollType = SCROLL_WEB_PARENT;
             parentFling(velocityY);
         } else if (target instanceof RecyclerView && velocityY < 0 && getScrollY() == topHeight) {
             //RV滑动到顶部时，继续向上滑动父控件和WebView，这里用于计算到达父控件的顶部时RV的速度
             currentScrollType = SCROLL_RV_PARENT;
             parentFling((int) velocityY);
+        } else if (target instanceof RecyclerView && velocityY > 0) {
+            isRvFlingDown = true;
         }
         return super.onNestedPreFling(target, velocityX, velocityY);
     }
@@ -416,12 +423,16 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
         if (scroller.computeScrollOffset()) {
             int currY = scroller.getCurrY();
             switch (currentScrollType) {
-                case SCROLL_NEXT://上下切换
+                case SCROLL_SWITCH://上下切换
                     scrollTo(0, currY);
                     invalidate();
                     isSwitching = !scroller.isFinished();
                     break;
-                case SCROLL_PARENT_RV://WebView向父控件向RecyclerView滑动
+                case SCROLL_WEB_PARENT://WebView向父控件滑动
+                    if (isRvFlingDown) {
+                        //RecyclerView的区域的fling由自己完成
+                        break;
+                    }
                     scrollTo(0, currY);
                     invalidate();
                     checkRvTop();
@@ -564,7 +575,7 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
         if (webView != null) {
             webView.stopScroll();
         }
-        currentScrollType = SCROLL_NEXT;
+        currentScrollType = SCROLL_SWITCH;
         isSwitching = true;
         if (getScrollY() == 0) {//滑向Bottom
             rvScrollToPosition(rvPosition);

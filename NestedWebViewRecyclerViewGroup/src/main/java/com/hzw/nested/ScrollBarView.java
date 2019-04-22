@@ -18,7 +18,7 @@ import java.lang.ref.WeakReference;
  */
 class ScrollBarView extends View {
 
-    private final static int ALPHA_OFFSET = 20;
+    private final static int ALPHA_OFFSET = 30;
     private final static int MSG_WHAT = 1314;
     private final static int DURATION = 300;
     private Paint paint = new Paint();
@@ -81,7 +81,8 @@ class ScrollBarView extends View {
         barHeight = measureHeight * measureHeight / contentHeight;
         barHeight = barHeight < minBarHeight ? minBarHeight : barHeight;
         //计算scrollBar的偏移量
-        barOffset = parentScrollY + childScrollY * (measureHeight - barHeight) / (contentHeight - measureHeight);
+        barOffset = parentScrollY + barWidth / 2 +
+                childScrollY * (measureHeight - barHeight - barWidth) / (contentHeight - measureHeight);
         invalidate();
     }
 
@@ -119,7 +120,7 @@ class ScrollBarView extends View {
                 if (barView.alpha == 0) {
                     barView.isClearBar = true;
                 } else {
-                    sendEmptyMessageDelayed(MSG_WHAT, 30);
+                    sendEmptyMessage(MSG_WHAT);
                 }
                 barView.invalidate();
             }
@@ -131,6 +132,7 @@ class ScrollBarView extends View {
         super.onDetachedFromWindow();
         if (handler != null) {
             handler.removeCallbacksAndMessages(null);
+            handler = null;
         }
     }
 
