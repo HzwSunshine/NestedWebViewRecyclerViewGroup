@@ -19,7 +19,7 @@ android {
         }
     }
 
-    version = "1.0.3"
+    version = "1.0.4"
     group = "com.github.hzw"
     androidArtifact {
         artifactId = "NestedWebViewRecyclerViewGroup"
@@ -27,7 +27,7 @@ android {
     publish {
         userOrg = 'hzwsunshine'
         desc = 'This is a ViewGroup of WebView and RecyclerView'
-        website = 'https://github.com/HzwSunshine/NestedViewGroup'
+        website = 'https://github.com/HzwSunshine/NestedWebViewRecyclerViewGroup'
     }
 
 }

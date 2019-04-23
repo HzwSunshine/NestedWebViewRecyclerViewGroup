@@ -41,6 +41,7 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
     private RecyclerView recyclerView;
     private ScrollBarView scrollbar;
     private Scroller scroller;
+    private Runnable runnable;
 
     private final int changeDuration;
     private int webViewContentHeight;
@@ -78,9 +79,9 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
         if (scrollbarEnable) {
             scrollbar = new ScrollBarView(getContext());
             int color = array.getColor(R.styleable.NestedWebViewRecyclerViewGroup_scrollbarColor, Color.LTGRAY);
-            float space = array.getDimension(R.styleable.NestedWebViewRecyclerViewGroup_scrollbarMarginRight, DpUtil.dip2px(3));
-            float barWidth = array.getDimension(R.styleable.NestedWebViewRecyclerViewGroup_scrollbarWidth, DpUtil.dip2px(4));
-            float barMinHeight = array.getDimension(R.styleable.NestedWebViewRecyclerViewGroup_scrollbarMinHeight, DpUtil.dip2px(30));
+            float space = array.getDimension(R.styleable.NestedWebViewRecyclerViewGroup_scrollbarMarginRight, Util.dip2px(3));
+            float barWidth = array.getDimension(R.styleable.NestedWebViewRecyclerViewGroup_scrollbarWidth, Util.dip2px(4));
+            float barMinHeight = array.getDimension(R.styleable.NestedWebViewRecyclerViewGroup_scrollbarMinHeight, Util.dip2px(30));
             scrollbar.init(color, (int) space, (int) barWidth, (int) barMinHeight);
         }
         array.recycle();
@@ -161,13 +162,20 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
             View child = getChildAt(i);
             if (child instanceof NestedScrollWebView) {
                 webView = (NestedScrollWebView) child;
-                post(new Runnable() {
+                runnable = new Runnable() {
                     @Override
                     public void run() {
-                        topHeight = webView.getHeight();
-                        initTopHeight = topHeight;
+                        if (webView != null) {
+                            topHeight = webView.getHeight();
+                            initTopHeight = topHeight;
+                        }
+                        if (recyclerView == null) {
+                            //找不到RecyclerView时，会在界面显示时再次尝试重新获取
+                            findRecyclerView(NestedWebViewRecyclerViewGroup.this);
+                        }
                     }
-                });
+                };
+                post(runnable);
             } else if (child instanceof RecyclerView) {
                 recyclerView = (RecyclerView) child;
             } else if (child instanceof ViewGroup) {
@@ -176,15 +184,6 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
         }
         if (scrollbar != null && scrollbar.getParent() == null) {
             addView(scrollbar);
-        }
-        if (recyclerView == null) {
-            //找不到RecyclerView时，会在界面显示时再次尝试重新获取
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    findRecyclerView(NestedWebViewRecyclerViewGroup.this);
-                }
-            });
         }
     }
 
@@ -291,6 +290,7 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
             scroller.abortAnimation();
             scroller = null;
         }
+        removeCallbacks(runnable);
         velocityTracker = null;
         recyclerView = null;
         scrollbar = null;
@@ -336,12 +336,20 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
         } else if (target instanceof RecyclerView && velocityY > 0) {
             isRvFlingDown = true;
         }
-        return super.onNestedPreFling(target, velocityX, velocityY);
+        if (Util.isAboveL()) {
+            return super.onNestedPreFling(target, velocityX, velocityY);
+        } else {
+            return false;
+        }
     }
 
     @Override
-    public boolean onNestedFling(@NonNull View target, float velocityX, float velocityY, boolean consumed) {
-        return super.onNestedFling(target, velocityX, velocityY, consumed);
+    public boolean onNestedFling(View target, float velocityX, float velocityY, boolean consumed) {
+        if (Util.isAboveL()) {
+            return super.onNestedFling(target, velocityX, velocityY, consumed);
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -602,6 +610,7 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
 
 
     private void rvScrollToPosition(int position) {
+        if (recyclerView == null) return;
         recyclerView.scrollToPosition(position);
         RecyclerView.LayoutManager manager = recyclerView.getLayoutManager();
         if (manager instanceof LinearLayoutManager) {

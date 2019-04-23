@@ -52,7 +52,7 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
         ViewConfiguration configuration = ViewConfiguration.get(getContext());
         mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
         //TouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
-        TouchSlop = DpUtil.dip2px(3);
+        TouchSlop = Util.dip2px(3);
         density = getResources().getDisplayMetrics().density;
     }
 
