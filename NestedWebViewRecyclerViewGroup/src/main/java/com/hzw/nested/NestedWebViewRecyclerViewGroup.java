@@ -48,6 +48,7 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
     private int currentScrollType;
     private int rvContentHeight;
     private int maximumVelocity;
+    private final float density;
     //WebView的初始高度
     private int initTopHeight;
     private int topHeight;
@@ -71,6 +72,7 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
         setWillNotDraw(false);
         helper = new NestedScrollingParentHelper(this);
         scroller = new Scroller(getContext());
+        density = getResources().getDisplayMetrics().density;
         ViewConfiguration configuration = ViewConfiguration.get(getContext());
         maximumVelocity = configuration.getScaledMaximumFlingVelocity();
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.NestedWebViewRecyclerViewGroup, defStyleAttr, 0);
@@ -169,10 +171,8 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
                             topHeight = webView.getHeight();
                             initTopHeight = topHeight;
                         }
-                        if (recyclerView == null) {
-                            //找不到RecyclerView时，会在界面显示时再次尝试重新获取
-                            findRecyclerView(NestedWebViewRecyclerViewGroup.this);
-                        }
+                        //找不到RecyclerView时，会在界面显示时再次尝试重新获取
+                        findRecyclerView(NestedWebViewRecyclerViewGroup.this);
                     }
                 };
                 post(runnable);
@@ -240,7 +240,7 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
                 break;
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
-                if (isParentCenter()) {
+                if (isParentCenter() && velocityTracker != null) {
                     //处理连接处的父控件fling事件
                     velocityTracker.computeCurrentVelocity(1000, maximumVelocity);
                     int yVelocity = (int) -velocityTracker.getYVelocity();
@@ -344,7 +344,7 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
     }
 
     @Override
-    public boolean onNestedFling(View target, float velocityX, float velocityY, boolean consumed) {
+    public boolean onNestedFling(@NonNull View target, float velocityX, float velocityY, boolean consumed) {
         if (Util.isAboveL()) {
             return super.onNestedFling(target, velocityX, velocityY, consumed);
         } else {
@@ -398,21 +398,6 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
     @Override
     public void onStopNestedScroll(@NonNull View view, int i) {
         helper.onStopNestedScroll(view);
-    }
-
-    private boolean canWebViewScrollDown() {
-        final int offset = webView.getScrollY();
-        final int range = getWebViewContentHeight() - webView.getHeight();
-        if (range == 0) {
-            return false;
-        }
-        return offset < range - 3;
-    }
-
-    private void scrollToWebViewBottom() {
-        if (webView != null) {
-            webView.scrollToBottom();
-        }
     }
 
     @Override
@@ -472,21 +457,18 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
         }
     }
 
-    /**
-     * 如果WebView存在不满一屏的情况，那么需要设置WebView的真实高度
-     */
-    public void setWebViewContentHeight(int height) {
-        if (height > 0) {
-            int initHeight = getMeasuredHeight();
-            if (height < initHeight) {
-                //情况1：内容不满一屏，情况3：再次设置高度不满一屏
-                topHeight = height;
-                requestLayout();
-            } else if ((topHeight != initHeight && height > initHeight)) {
-                //情况2：之前有过情况1但是再设置的高度却大于一屏
-                topHeight = initHeight;
-                requestLayout();
-            }
+    private boolean canWebViewScrollDown() {
+        final int offset = webView.getScrollY();
+        final int range = getWebViewContentHeight() - webView.getHeight();
+        if (range == 0) {
+            return false;
+        }
+        return offset < range - 3;
+    }
+
+    private void scrollToWebViewBottom() {
+        if (webView != null) {
+            webView.scrollToBottom();
         }
     }
 
@@ -509,13 +491,9 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
         }
     }
 
-    public void setOnScrollListener(onScrollListener listener) {
-        this.listener = listener;
-    }
-
     private int getWebViewContentHeight() {
         if (webViewContentHeight == 0) {
-            webViewContentHeight = (int) (webView.getContentHeight() * getResources().getDisplayMetrics().density);
+            webViewContentHeight = (int) (webView.getContentHeight() * density);
         }
         return webViewContentHeight;
     }
@@ -535,6 +513,10 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
         return recyclerView.computeVerticalScrollOffset();
     }
 
+    public void setOnScrollListener(onScrollListener listener) {
+        this.listener = listener;
+    }
+
     /**
      * 获取当前的滑动距离
      */
@@ -550,6 +532,25 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
             return getWebViewContentHeight() - webView.getHeight();
         }
         return webView.getScrollY();
+    }
+
+    /**
+     * 如果WebView的内容存在不满一屏的情况，请手动设置WebView的内容高度
+     * WebView的内容高度可让前端同学通过js传递给你
+     */
+    public void setWebViewContentHeight(int contentHeight) {
+        if (contentHeight > 0) {
+            int initHeight = getMeasuredHeight();
+            if (contentHeight < initHeight) {
+                //情况1：内容不满一屏，情况3：再次设置高度不满一屏
+                topHeight = contentHeight;
+                requestLayout();
+            } else if ((topHeight != initHeight && contentHeight > initHeight)) {
+                //情况2：之前有过情况1但是再设置的高度却大于一屏
+                topHeight = initHeight;
+                requestLayout();
+            }
+        }
     }
 
     /**
@@ -607,7 +608,6 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
         if (recyclerView == null) return false;
         return !recyclerView.canScrollVertically(-1);
     }
-
 
     private void rvScrollToPosition(int position) {
         if (recyclerView == null) return;

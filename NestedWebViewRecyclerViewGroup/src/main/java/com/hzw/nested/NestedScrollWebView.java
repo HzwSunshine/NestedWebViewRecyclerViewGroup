@@ -51,9 +51,9 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
         scroller = new Scroller(getContext());
         ViewConfiguration configuration = ViewConfiguration.get(getContext());
         mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
+        density = getResources().getDisplayMetrics().density;
         //TouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
         TouchSlop = Util.dip2px(3);
-        density = getResources().getDisplayMetrics().density;
     }
 
     @Override
@@ -94,7 +94,7 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
                 break;
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
-                if (isParentResetScroll()) {
+                if (isParentResetScroll() && velocityTracker != null) {
                     velocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
                     int yVelocity = (int) -velocityTracker.getYVelocity();
                     recycleVelocityTracker();
