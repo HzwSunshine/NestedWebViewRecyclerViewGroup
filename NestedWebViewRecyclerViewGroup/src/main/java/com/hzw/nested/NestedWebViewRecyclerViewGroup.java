@@ -382,7 +382,7 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
     @Override
     public void onNestedScroll(@NonNull View view, int dxConsumed, int dyConsumed,
                                int dxUnconsumed, int dyUnconsumed, int type) {
-        if (getScrollY() != 0 || getScrollY() != topHeight) {
+        if (dyUnconsumed != 0) {
             scrollBy(0, dyUnconsumed);
         }
         if (getScrollY() == topHeight) {
