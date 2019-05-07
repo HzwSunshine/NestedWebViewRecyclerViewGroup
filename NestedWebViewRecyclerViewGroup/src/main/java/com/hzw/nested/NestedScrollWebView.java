@@ -8,7 +8,6 @@ import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
-import android.view.View;
 import android.view.ViewConfiguration;
 import android.webkit.WebView;
 import android.widget.Scroller;
@@ -21,8 +20,6 @@ import android.widget.Scroller;
 public class NestedScrollWebView extends WebView implements NestedScrollingChild2 {
 
     private final int[] mScrollConsumed = new int[2];
-    private final int[] mScrollOffset = new int[2];
-    private NestedWebViewRecyclerViewGroup parent;
     private NestedScrollingChildHelper childHelper;
     private VelocityTracker velocityTracker;
     private Scroller scroller;
@@ -72,6 +69,7 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
                 isSelfFling = false;
                 hasFling = false;
                 maxScrollY = getWebViewContentHeight() - getHeight();
+                startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL);
                 break;
             case MotionEvent.ACTION_MOVE:
                 initVelocityTrackerIfNotExists();
@@ -79,12 +77,7 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
                 int y = (int) (event.getRawY());
                 int dy = y - lastY;
                 lastY = y;
-                if (startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL) &&
-                        dispatchNestedPreScroll(0, -dy, mScrollConsumed, mScrollOffset)) {
-                    if (mScrollConsumed[1] != 0 && mScrollOffset[1] == 0) {
-                        scrollBy(0, mScrollConsumed[1]);
-                    }
-                } else {
+                if (!dispatchNestedPreScroll(0, -dy, mScrollConsumed, null)) {
                     scrollBy(0, -dy);
                 }
                 if (Math.abs(firstY - y) > TouchSlop) {
@@ -94,7 +87,7 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
                 break;
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
-                if (isParentResetScroll() && velocityTracker != null) {
+                if (canWebViewScrollDown() && velocityTracker != null) {
                     velocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
                     int yVelocity = (int) -velocityTracker.getYVelocity();
                     recycleVelocityTracker();
@@ -121,7 +114,6 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        parent = null;
         childHelper = null;
         velocityTracker = null;
         if (scroller != null) {
@@ -156,15 +148,13 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
 
     @Override
     public void scrollTo(int x, int y) {
-        if (isParentResetScroll()) {
-            if (y < 0) {
-                y = 0;
-            }
-            if (maxScrollY != 0 && y > maxScrollY) {
-                y = maxScrollY;
-            }
-            super.scrollTo(x, y);
+        if (y < 0) {
+            y = 0;
         }
+        if (maxScrollY != 0 && y > maxScrollY) {
+            y = maxScrollY;
+        }
+        super.scrollTo(x, y);
     }
 
     void stopScroll() {
@@ -176,31 +166,6 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     void scrollToBottom() {
         int y = computeVerticalScrollRange();
         super.scrollTo(0, y - getHeight());
-    }
-
-    private void initWebViewParent() {
-        if (this.parent != null) {
-            return;
-        }
-        View parent = (View) getParent();
-        while (parent != null) {
-            if (parent instanceof NestedWebViewRecyclerViewGroup) {
-                this.parent = (NestedWebViewRecyclerViewGroup) parent;
-                break;
-            } else {
-                parent = (View) getParent();
-            }
-        }
-    }
-
-    private boolean isParentResetScroll() {
-        if (parent == null) {
-            initWebViewParent();
-        }
-        if (parent != null) {
-            return parent.getScrollY() == 0;
-        }
-        return true;
     }
 
     private void initOrResetVelocityTracker() {

@@ -63,6 +63,7 @@ public class NestedFragmentActivity extends AppCompatActivity implements View.On
 
     @SuppressLint("SetJavaScriptEnabled")
     private void initWebView() {
+        //手动添加WebView的方式，便于WebView的复用以及其他
         WebView webView = new NestedScrollWebView(this);
         FrameLayout container = findViewById(R.id.webView_container);
         container.addView(webView);

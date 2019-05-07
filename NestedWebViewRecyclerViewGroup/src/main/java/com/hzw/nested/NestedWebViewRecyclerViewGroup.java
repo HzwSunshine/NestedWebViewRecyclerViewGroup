@@ -51,9 +51,9 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
     private final float density;
     //WebView的初始高度
     private int initTopHeight;
-    private int topHeight;
     private int contentHeight;
     private int totalHeight;
+    private int topHeight;
 
     //是否在上下切换滑动中...
     private boolean isSwitching;
@@ -212,9 +212,6 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
                 findRecyclerView((ViewGroup) child);
             }
         }
-        if (webView != null) {
-            initTopHeight = topHeight = webView.getHeight();
-        }
     }
 
     private void findWebView(ViewGroup parent) {
@@ -229,6 +226,10 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
             if (child instanceof ViewGroup) {
                 findWebView((ViewGroup) child);
             }
+        }
+        if (webView != null) {
+            initTopHeight = topHeight = webView.getHeight();
+            super.requestLayout();
         }
     }
 
@@ -393,8 +394,7 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
             //为了WebView滑动到底部，继续向下滑动父控件
             scrollBy(0, dy);
             ints[1] = dy;
-        }
-        if (dy < 0 && isCenter) {
+        } else if (dy < 0 && isCenter) {
             //为了RecyclerView滑动到顶部时，继续向上滑动父控件
             scrollBy(0, dy);
             ints[1] = dy;
@@ -508,9 +508,9 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (scrollbar == null && listener == null) return;
+        if (scrollbar == null && listener == null || webView == null) return;
         int webViewContentHeight = getWebViewContentHeight();
-        if (webView == null || recyclerView == null || webViewContentHeight == 0) return;
+        if (recyclerView == null || webViewContentHeight == 0) return;
         int totalHeight = webViewContentHeight + getRVContentHeight();
         int scrollY = getCurrentScrollY();
         if (scrollbar != null) {
