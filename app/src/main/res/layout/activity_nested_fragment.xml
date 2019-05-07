@@ -17,12 +17,12 @@
         app:scrollbarColor="@color/colorAccent"
         app:scrollbarEnable="true">
 
-        <com.hzw.nested.NestedScrollWebView
-            android:id="@+id/nest_webView"
+        <FrameLayout
+            android:id="@+id/webView_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        </com.hzw.nested.NestedScrollWebView>
+        </FrameLayout>
 
         <FrameLayout
             android:id="@+id/fragment_container"

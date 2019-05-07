@@ -52,6 +52,8 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
     //WebView的初始高度
     private int initTopHeight;
     private int topHeight;
+    private int contentHeight;
+    private int totalHeight;
 
     //是否在上下切换滑动中...
     private boolean isSwitching;
@@ -113,6 +115,7 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
         int right = getPaddingRight();
         int count = getChildCount();
         int parentSpace = measureHeight - getPaddingTop() - getPaddingBottom();
+        totalHeight = 0;
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
             //将两个子View的高度设置成父控件高度
@@ -128,9 +131,11 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
                 //WebView重新设置的高度不满一屏
                 childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(topHeight, MeasureSpec.EXACTLY);
                 params.height = topHeight;
+                totalHeight += topHeight;
             } else {
                 childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(parentSpace, MeasureSpec.EXACTLY);
                 params.height = parentSpace;
+                totalHeight += parentSpace;
             }
             measureChild(child, childWidthMeasureSpec, childHeightMeasureSpec);
         }
@@ -146,13 +151,21 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
             int childHeight = child.getMeasuredHeight();
             if (child instanceof ScrollBarView) {
                 bringChildToFront(child);
-                int contentHeight = webView.getMeasuredHeight() + getMeasuredHeight();
-                child.layout(getMeasuredWidth() - childWidth, 0, childHeight, contentHeight);
+                child.layout(getMeasuredWidth() - childWidth, 0, childHeight, totalHeight);
             } else {
                 child.layout(0, childTotalHeight, childWidth, childTotalHeight + childHeight);
             }
             childTotalHeight += childHeight;
         }
+    }
+
+    @Override
+    public void requestLayout() {
+        if (initTopHeight != 0 && contentHeight > getHeight()) {
+            //手动设置了WebView的内容高度，此时父控件高度可能发生变化时，需要根据WebView的内容高度再次调整WebView的高度
+            initTopHeight = topHeight = webView.getHeight();
+        }
+        super.requestLayout();
     }
 
     @Override
@@ -164,27 +177,26 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
             View child = getChildAt(i);
             if (child instanceof NestedScrollWebView) {
                 webView = (NestedScrollWebView) child;
-                runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        if (webView != null) {
-                            topHeight = webView.getHeight();
-                            initTopHeight = topHeight;
-                        }
-                        //找不到RecyclerView时，会在界面显示时再次尝试重新获取
-                        findRecyclerView(NestedWebViewRecyclerViewGroup.this);
-                    }
-                };
-                post(runnable);
             } else if (child instanceof RecyclerView) {
                 recyclerView = (RecyclerView) child;
-            } else if (child instanceof ViewGroup) {
-                findRecyclerView((ViewGroup) child);
             }
         }
         if (scrollbar != null && scrollbar.getParent() == null) {
             addView(scrollbar);
         }
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (webView != null) {
+                    initTopHeight = topHeight = webView.getHeight();
+                } else {
+                    findWebView(NestedWebViewRecyclerViewGroup.this);
+                }
+                //找不到RecyclerView时，会在界面显示时再次尝试重新获取
+                findRecyclerView(NestedWebViewRecyclerViewGroup.this);
+            }
+        };
+        post(runnable);
     }
 
     private void findRecyclerView(ViewGroup parent) {
@@ -198,6 +210,24 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
             }
             if (child instanceof ViewGroup) {
                 findRecyclerView((ViewGroup) child);
+            }
+        }
+        if (webView != null) {
+            initTopHeight = topHeight = webView.getHeight();
+        }
+    }
+
+    private void findWebView(ViewGroup parent) {
+        if (webView != null) return;
+        int count = parent.getChildCount();
+        for (int i = 0; i < count; i++) {
+            View child = parent.getChildAt(i);
+            if (child instanceof NestedScrollWebView) {
+                webView = (NestedScrollWebView) child;
+                break;
+            }
+            if (child instanceof ViewGroup) {
+                findWebView((ViewGroup) child);
             }
         }
     }
@@ -540,15 +570,15 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
      */
     public void setWebViewContentHeight(int contentHeight) {
         if (contentHeight > 0) {
-            int initHeight = getMeasuredHeight();
-            if (contentHeight < initHeight) {
+            this.contentHeight = contentHeight;
+            if (contentHeight < initTopHeight) {
                 //情况1：内容不满一屏，情况3：再次设置高度不满一屏
                 topHeight = contentHeight;
-                requestLayout();
-            } else if ((topHeight != initHeight && contentHeight > initHeight)) {
+                super.requestLayout();
+            } else if ((topHeight != initTopHeight && contentHeight > initTopHeight)) {
                 //情况2：之前有过情况1但是再设置的高度却大于一屏
-                topHeight = initHeight;
-                requestLayout();
+                topHeight = initTopHeight;
+                super.requestLayout();
             }
         }
     }

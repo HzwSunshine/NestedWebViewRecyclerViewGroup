@@ -9,8 +9,10 @@ import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.hzw.nested.NestedScrollWebView;
 import com.hzw.nested.NestedWebViewRecyclerViewGroup;
 
 public class NestedFragmentActivity extends AppCompatActivity implements View.OnClickListener {
@@ -61,7 +63,9 @@ public class NestedFragmentActivity extends AppCompatActivity implements View.On
 
     @SuppressLint("SetJavaScriptEnabled")
     private void initWebView() {
-        WebView webView = findViewById(R.id.nest_webView);
+        WebView webView = new NestedScrollWebView(this);
+        FrameLayout container = findViewById(R.id.webView_container);
+        container.addView(webView);
         webView.setVerticalScrollBarEnabled(false);
         webView.setHorizontalScrollBarEnabled(false);
         webView.getSettings().setJavaScriptEnabled(true);
