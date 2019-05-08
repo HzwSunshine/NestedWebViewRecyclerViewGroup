@@ -341,9 +341,6 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
         return (axes & ViewCompat.SCROLL_AXIS_VERTICAL) != 0;
     }
 
-    /**
-     * 当onStartNestedScroll返回true时，该方法被回调
-     */
     @Override
     public void onNestedScrollAccepted(@NonNull View view, @NonNull View view1, int axes, int type) {
         helper.onNestedScrollAccepted(view, view1, axes, type);
@@ -383,9 +380,6 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
         }
     }
 
-    /**
-     * 在子View消费滑动事件前，优先响应滑动操作，消费部分或全部滑动距离
-     */
     @Override
     public void onNestedPreScroll(@NonNull View view, int dx, int dy, @NonNull int[] ints, int type) {
         boolean isWebViewBottom = !canWebViewScrollDown();
@@ -406,16 +400,14 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
         checkRvTop();
     }
 
-    /**
-     * 接收子View处理完滑动后的滑动距离信息, 在这里父控件可以选择是否处理剩余的滑动距离
-     */
     @Override
     public void onNestedScroll(@NonNull View view, int dxConsumed, int dyConsumed,
                                int dxUnconsumed, int dyUnconsumed, int type) {
-        if (dyUnconsumed != 0) {
+        if (dyUnconsumed < 0) {
+            //RecyclerView向父控件的滑动衔接处
             scrollBy(0, dyUnconsumed);
         }
-        if (getScrollY() == topHeight) {
+        if (!isParentCenter()) {
             //用于绘制进度条
             invalidate();
         }
@@ -551,16 +543,18 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
      * 获取当前的滑动距离
      */
     public int getCurrentScrollY() {
-        return getScrollY() + getWebViewScrollY() + getRVScrollY();
+        if (recyclerView == null) return 0;
+        int wbScrollY = getWebViewScrollY();
+        if (getScrollY() == topHeight) {
+            wbScrollY = getWebViewContentHeight() - webView.getHeight();
+        }
+        return getScrollY() + wbScrollY + getRVScrollY();
     }
 
     /**
      * 获取当前WebView的滑动距离
      */
     public int getWebViewScrollY() {
-        if (getScrollY() == topHeight) {
-            return getWebViewContentHeight() - webView.getHeight();
-        }
         return webView.getScrollY();
     }
 

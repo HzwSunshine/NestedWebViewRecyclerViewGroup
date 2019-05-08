@@ -8,6 +8,7 @@ import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
+import android.view.View;
 import android.view.ViewConfiguration;
 import android.webkit.WebView;
 import android.widget.Scroller;
@@ -20,6 +21,7 @@ import android.widget.Scroller;
 public class NestedScrollWebView extends WebView implements NestedScrollingChild2 {
 
     private final int[] mScrollConsumed = new int[2];
+    private NestedWebViewRecyclerViewGroup parent;
     private NestedScrollingChildHelper childHelper;
     private VelocityTracker velocityTracker;
     private Scroller scroller;
@@ -55,7 +57,6 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        boolean intercept = false;
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 mWebViewContentHeight = 0;
@@ -64,7 +65,6 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
                 if (!scroller.isFinished()) {
                     scroller.abortAnimation();
                 }
-                intercept = isIntercept();
                 initOrResetVelocityTracker();
                 isSelfFling = false;
                 hasFling = false;
@@ -87,7 +87,7 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
                 break;
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
-                if (canWebViewScrollDown() && velocityTracker != null) {
+                if (isParentResetScroll() && velocityTracker != null) {
                     velocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
                     int yVelocity = (int) -velocityTracker.getYVelocity();
                     recycleVelocityTracker();
@@ -97,7 +97,7 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
                 break;
         }
         super.onTouchEvent(event);
-        return intercept;
+        return true;
     }
 
     @Override
@@ -114,12 +114,11 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+        recycleVelocityTracker();
+        stopScroll();
         childHelper = null;
-        velocityTracker = null;
-        if (scroller != null) {
-            scroller.abortAnimation();
-            scroller = null;
-        }
+        scroller = null;
+        parent = null;
     }
 
     @Override
@@ -148,13 +147,21 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
 
     @Override
     public void scrollTo(int x, int y) {
-        if (y < 0) {
-            y = 0;
+        if (isParentResetScroll()) {
+            if (y < 0) {
+                y = 0;
+            }
+            if (maxScrollY != 0 && y > maxScrollY) {
+                y = maxScrollY;
+            }
+            super.scrollTo(x, y);
+
+            //用于父控件不是嵌套控件时，绘制进度条，仅此而已
+            if (!(getParent() instanceof NestedWebViewRecyclerViewGroup)) {
+                startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL);
+                dispatchNestedScroll(1, 0, 0, 0, null);
+            }
         }
-        if (maxScrollY != 0 && y > maxScrollY) {
-            y = maxScrollY;
-        }
-        super.scrollTo(x, y);
     }
 
     void stopScroll() {
@@ -166,6 +173,31 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     void scrollToBottom() {
         int y = computeVerticalScrollRange();
         super.scrollTo(0, y - getHeight());
+    }
+
+    private void initWebViewParent() {
+        if (this.parent != null) {
+            return;
+        }
+        View parent = (View) getParent();
+        while (parent != null) {
+            if (parent instanceof NestedWebViewRecyclerViewGroup) {
+                this.parent = (NestedWebViewRecyclerViewGroup) parent;
+                break;
+            } else {
+                parent = (View) parent.getParent();
+            }
+        }
+    }
+
+    private boolean isParentResetScroll() {
+        if (parent == null) {
+            initWebViewParent();
+        }
+        if (parent != null) {
+            return parent.getScrollY() == 0;
+        }
+        return true;
     }
 
     private void initOrResetVelocityTracker() {
@@ -212,13 +244,6 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
             mWebViewContentHeight = (int) (getContentHeight() * density);
         }
         return mWebViewContentHeight;
-    }
-
-    private boolean isIntercept() {
-        //当WebView当前可以上下滑动（不在顶部或底部)或内容不满一屏时，手势事件自己处理
-        boolean canScroll = isWebViewCanScroll();
-        boolean isFullScreen = getWebViewContentHeight() > getHeight();
-        return !isFullScreen || canScroll;
     }
 
     private NestedScrollingChildHelper getHelper() {

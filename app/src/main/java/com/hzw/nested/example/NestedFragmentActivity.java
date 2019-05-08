@@ -1,18 +1,14 @@
 package com.hzw.nested.example;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.hzw.nested.NestedScrollWebView;
 import com.hzw.nested.NestedWebViewRecyclerViewGroup;
 
 public class NestedFragmentActivity extends AppCompatActivity implements View.OnClickListener {
@@ -61,17 +57,11 @@ public class NestedFragmentActivity extends AppCompatActivity implements View.On
         ReadUtil.saveRead(this, scrollY);
     }
 
-    @SuppressLint("SetJavaScriptEnabled")
     private void initWebView() {
         //手动添加WebView的方式，便于WebView的复用以及其他
-        WebView webView = new NestedScrollWebView(this);
+        WebView webView = new CustomerWebView(this);
         FrameLayout container = findViewById(R.id.webView_container);
         container.addView(webView);
-        webView.setVerticalScrollBarEnabled(false);
-        webView.setHorizontalScrollBarEnabled(false);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.setWebViewClient(new WebViewClient());
-        webView.setWebChromeClient(new WebChromeClient());
         webView.loadUrl("https://github.com/HzwSunshine/NestedWebViewRecyclerViewGroup");
     }
 
