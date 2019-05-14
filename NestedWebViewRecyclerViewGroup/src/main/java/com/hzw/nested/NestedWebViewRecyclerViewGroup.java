@@ -127,7 +127,7 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
                 //scrollBar的测量高度为整个父控件的初始高度
                 childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(parentSpace, MeasureSpec.EXACTLY);
                 params.height = parentSpace;
-            } else if (child instanceof NestedScrollWebView && topHeight < initTopHeight) {
+            } else if (child instanceof NestedScrollWebView && initTopHeight != 0 && topHeight < initTopHeight) {
                 //WebView重新设置的高度不满一屏
                 childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(topHeight, MeasureSpec.EXACTLY);
                 params.height = topHeight;
@@ -564,16 +564,14 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
      */
     public void setWebViewContentHeight(int contentHeight) {
         if (contentHeight > 0) {
+            //手动设置的WebView内容高度不为0时，重新布局页面
             this.contentHeight = contentHeight;
-            if (contentHeight < initTopHeight) {
-                //情况1：内容不满一屏，情况3：再次设置高度不满一屏
-                topHeight = contentHeight;
-                super.requestLayout();
-            } else if ((topHeight != initTopHeight && contentHeight > initTopHeight)) {
-                //情况2：之前有过情况1但是再设置的高度却大于一屏
-                topHeight = initTopHeight;
-                super.requestLayout();
+            topHeight = contentHeight;
+            int height = getMeasuredHeight();
+            if (contentHeight > height) {
+                topHeight = height;
             }
+            super.requestLayout();
         }
     }
 
