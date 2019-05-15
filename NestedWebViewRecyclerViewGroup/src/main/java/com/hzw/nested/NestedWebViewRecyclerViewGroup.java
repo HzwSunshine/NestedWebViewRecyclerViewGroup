@@ -291,6 +291,9 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
         if (recyclerView != null) {
             recyclerView.stopScroll();
         }
+        if (webView != null) {
+            webView.stopScroll();
+        }
     }
 
     private void initOrResetVelocityTracker() {
@@ -383,21 +386,23 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
     @Override
     public void onNestedPreScroll(@NonNull View view, int dx, int dy, @NonNull int[] ints, int type) {
         boolean isWebViewBottom = !canWebViewScrollDown();
-        boolean isCenter = isParentCenter();
+        boolean isParentCenter = isParentCenter();
         if (dy > 0 && getScrollY() < topHeight && isWebViewBottom) {
             //为了WebView滑动到底部，继续向下滑动父控件
             scrollBy(0, dy);
             ints[1] = dy;
-        } else if (dy < 0 && isCenter) {
+        } else if (dy < 0 && isParentCenter) {
             //为了RecyclerView滑动到顶部时，继续向上滑动父控件
             scrollBy(0, dy);
             ints[1] = dy;
         }
-        if (isCenter && !isWebViewBottom) {
+        if (isParentCenter && !isWebViewBottom) {
             //异常情况的处理
             scrollToWebViewBottom();
         }
-        checkRvTop();
+        if (isParentCenter) {
+            checkRvTop();
+        }
     }
 
     @Override
@@ -450,7 +455,9 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
                     }
                     scrollTo(0, currY);
                     invalidate();
-                    checkRvTop();
+                    if (isParentCenter()) {
+                        checkRvTop();
+                    }
                     if (getScrollY() == topHeight && !hasFling) {
                         //滚动到父控件底部，滚动事件交给RecyclerView
                         hasFling = true;
@@ -500,7 +507,9 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (scrollbar == null && listener == null || webView == null) return;
+        if (scrollbar == null && listener == null || webView == null || isSwitching) {
+            return;
+        }
         int webViewContentHeight = getWebViewContentHeight();
         if (recyclerView == null || webViewContentHeight == 0) return;
         int totalHeight = webViewContentHeight + getRVContentHeight();
@@ -602,12 +611,9 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
         if (isSwitching) {
             return;
         }
-        resetScroller();
-        if (webView != null) {
-            webView.stopScroll();
-        }
-        currentScrollType = SCROLL_SWITCH;
         isSwitching = true;
+        resetScroller();
+        currentScrollType = SCROLL_SWITCH;
         if (getScrollY() == 0) {//滑向Bottom
             rvScrollToPosition(rvPosition);
             scroller.startScroll(0, 0, 0, topHeight, changeDuration);
@@ -626,11 +632,6 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
         invalidate();
     }
 
-    private boolean isRvTop() {
-        if (recyclerView == null) return false;
-        return !recyclerView.canScrollVertically(-1);
-    }
-
     private void rvScrollToPosition(int position) {
         if (recyclerView == null) return;
         recyclerView.scrollToPosition(position);
@@ -640,10 +641,18 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
         }
     }
 
+    /**
+     * 当父控件有偏移时，检查RecyclerView是否在顶部
+     */
     private void checkRvTop() {
-        if (isParentCenter() && !isRvTop()) {
+        if (!isRvTop()) {
             rvScrollToPosition(0);
         }
+    }
+
+    private boolean isRvTop() {
+        if (recyclerView == null) return false;
+        return !recyclerView.canScrollVertically(-1);
     }
 
     /**
@@ -654,7 +663,7 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
         //有两种修复方案：1.将WebView手动滑动到底部，2.将父控件的scroll位置重置为0
         //目前的测试中没有出现这种异常，此代码作为异常防御
         if (isParentCenter() && canWebViewScrollDown()) {
-            if (getScrollY() > getMeasuredHeight() / 4) {
+            if (getScrollY() > getMeasuredHeight() / 3) {
                 scrollToWebViewBottom();
             } else {
                 scrollTo(0, 0);

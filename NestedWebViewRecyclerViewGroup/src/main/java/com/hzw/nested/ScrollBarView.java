@@ -75,8 +75,7 @@ class ScrollBarView extends View {
         if (contentHeight == 0) return;
         isClearBar = false;
         scrollOver = false;
-        alpha += ALPHA_OFFSET;
-        alpha = alpha > 255 ? 255 : alpha;
+        alpha = 255;
         //计算scrollBar的高度
         barHeight = measureHeight * measureHeight / contentHeight;
         barHeight = barHeight < minBarHeight ? minBarHeight : barHeight;
@@ -120,7 +119,7 @@ class ScrollBarView extends View {
                 if (barView.alpha == 0) {
                     barView.isClearBar = true;
                 } else {
-                    sendEmptyMessage(MSG_WHAT);
+                    sendEmptyMessageDelayed(MSG_WHAT, 10);
                 }
                 barView.invalidate();
             }
