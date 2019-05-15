@@ -5,6 +5,8 @@
 
 NestedWebViewRecyclerViewGroup 是 WebView 和 RecyclerView 的嵌套控件，用于经典的上面是 WebView 显示的文章，下面是 RecyclerView 显示的评论相关的文章详情页结构中，可以实现 WebView 和 RecyclerView 的无缝滑动切换，也提供 WebView 区域和 RecyclerView 区域的上下显示切换
 
+相关技术点参考：[NestedScrolling：文章详情页的实现](https://blog.csdn.net/hzwailll/article/details/89854692)
+
 ![image](https://github.com/HzwSunshine/NestedWebViewRecyclerViewGroup/blob/master/app/example/example.gif)
 
 </br>
