@@ -43,7 +43,7 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
     private Scroller scroller;
     private Runnable runnable;
 
-    private final int changeDuration;
+    private final int switchDuration;
     private int webViewContentHeight;
     private int currentScrollType;
     private int rvContentHeight;
@@ -78,7 +78,7 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
         ViewConfiguration configuration = ViewConfiguration.get(getContext());
         maximumVelocity = configuration.getScaledMaximumFlingVelocity();
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.NestedWebViewRecyclerViewGroup, defStyleAttr, 0);
-        changeDuration = array.getInteger(R.styleable.NestedWebViewRecyclerViewGroup_changeDuration, 300);
+        switchDuration = array.getInteger(R.styleable.NestedWebViewRecyclerViewGroup_switchDuration, 300);
         boolean scrollbarEnable = array.getBoolean(R.styleable.NestedWebViewRecyclerViewGroup_scrollbarEnable, true);
         if (scrollbarEnable) {
             scrollbar = new ScrollBarView(getContext());
@@ -447,6 +447,9 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
                     scrollTo(0, currY);
                     invalidate();
                     isSwitching = !scroller.isFinished();
+                    if (!isSwitching) {
+                        invalidate();//切换结束，显示一下进度条
+                    }
                     break;
                 case SCROLL_WEB_PARENT://WebView向父控件滑动
                     if (isRvFlingDown) {
@@ -572,6 +575,7 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
      * WebView的内容高度可让前端同学通过js传递给你
      */
     public void setWebViewContentHeight(int contentHeight) {
+        rvScrollToPosition(0);
         if (contentHeight > 0) {
             //手动设置的WebView内容高度不为0时，重新布局页面
             this.contentHeight = contentHeight;
@@ -616,17 +620,17 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
         currentScrollType = SCROLL_SWITCH;
         if (getScrollY() == 0) {//滑向Bottom
             rvScrollToPosition(rvPosition);
-            scroller.startScroll(0, 0, 0, topHeight, changeDuration);
+            scroller.startScroll(0, 0, 0, topHeight, switchDuration);
         } else if (getScrollY() == topHeight) {//滑向Top
             if (topHeight < getHeight()) {
                 rvScrollToPosition(0);
             }
-            scroller.startScroll(0, topHeight, 0, -topHeight, changeDuration);
+            scroller.startScroll(0, topHeight, 0, -topHeight, switchDuration);
         } else {//在交界处优先滑向Top
             if (topHeight < getHeight()) {
                 rvScrollToPosition(0);
             }
-            scroller.startScroll(0, getScrollY(), 0, -getScrollY(), changeDuration);
+            scroller.startScroll(0, getScrollY(), 0, -getScrollY(), switchDuration);
         }
         scroller.computeScrollOffset();
         invalidate();

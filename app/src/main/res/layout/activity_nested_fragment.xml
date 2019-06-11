@@ -13,9 +13,9 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        app:changeDuration="300"
         app:scrollbarColor="@color/colorAccent"
-        app:scrollbarEnable="true">
+        app:scrollbarEnable="true"
+        app:switchDuration="300">
 
         <FrameLayout
             android:id="@+id/webView_container"

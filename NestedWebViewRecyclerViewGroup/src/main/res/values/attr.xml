@@ -2,7 +2,7 @@
 <resources>
 
     <declare-styleable name="NestedWebViewRecyclerViewGroup">
-        <attr name="changeDuration" format="integer" />
+        <attr name="switchDuration" format="integer" />
         <attr name="scrollbarEnable" format="boolean" />
         <attr name="scrollbarColor" format="color" />
         <attr name="scrollbarMinHeight" format="dimension" />

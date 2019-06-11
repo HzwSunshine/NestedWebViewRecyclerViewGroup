@@ -6,7 +6,7 @@ import android.os.Build;
 /**
  * author: hzw
  * time: 2019/4/8 下午5:03
- * description:
+ * description:util
  */
 class Util {
     static int dip2px(float dipValue) {
