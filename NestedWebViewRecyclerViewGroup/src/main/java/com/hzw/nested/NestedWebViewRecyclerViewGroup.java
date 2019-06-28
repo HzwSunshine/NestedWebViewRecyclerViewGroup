@@ -111,7 +111,7 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
             measureChild(child, widthMeasureSpec, heightMeasureSpec);
-            if (!(child instanceof ScrollBarView)) {
+            if (child.getVisibility() != GONE && !(child instanceof ScrollBarView)) {
                 totalHeight += child.getMeasuredHeight();
             }
         }
@@ -125,6 +125,7 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
             View child = getChildAt(i);
             int childWidth = child.getMeasuredWidth();
             int childHeight = child.getMeasuredHeight();
+            childHeight = child.getVisibility() != GONE ? childHeight : 0;
             if (child instanceof ScrollBarView) {
                 bringChildToFront(child);
                 child.layout(getMeasuredWidth() - childWidth, 0, childHeight, totalHeight);
