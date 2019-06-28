@@ -148,11 +148,11 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     @Override
     public void scrollTo(int x, int y) {
         if (isParentResetScroll()) {
-            if (y < 0) {
-                y = 0;
-            }
             if (maxScrollY != 0 && y > maxScrollY) {
                 y = maxScrollY;
+            }
+            if (y < 0) {
+                y = 0;
             }
             super.scrollTo(x, y);
 
