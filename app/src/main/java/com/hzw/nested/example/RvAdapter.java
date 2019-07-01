@@ -49,6 +49,30 @@ public class RvAdapter extends RecyclerView.Adapter {
         }
     }
 
+    RvAdapter(boolean wrap) {
+        for (int i = 0; i < 2; i++) {
+            Entity entity2 = new Entity();
+            entity2.type = Entity.COMMENT;
+            entity2.title = String.format("%s. NestedWebViewRecyclerViewGroup一个RecyclerView和WebView的嵌套控件，一般用于文章详情页的结构中，解决RecyclerView和WebView滑动时的无缝衔接！", i + 1);
+            list.add(entity2);
+        }
+    }
+
+    public void addItem() {
+        Entity entity2 = new Entity();
+        entity2.type = Entity.COMMENT;
+        entity2.title = "NestedWebViewRecyclerViewGroup一个RecyclerView和WebView的嵌套控件，一般用于文章详情页的结构中，解决RecyclerView和WebView滑动时的无缝衔接！xxxx";
+        list.add(0, entity2);
+        notifyItemInserted(0);
+    }
+
+    public void deleteItem() {
+        if (list.size() > 0) {
+            list.remove(0);
+            notifyItemRemoved(0);
+        }
+    }
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {

@@ -21,4 +21,11 @@
         android:layout_marginTop="50dp"
         android:text="评论列表在Fragment中时，嵌套控件的使用" />
 
+    <Button
+        android:id="@+id/wrap_rv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="RV内容不满一屏的情况" />
+
 </LinearLayout>

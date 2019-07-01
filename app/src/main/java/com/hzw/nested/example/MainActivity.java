@@ -8,21 +8,17 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button nested;
-    private Button nestedFragment;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
-
-
     }
 
     private void initView() {
-        nested = findViewById(R.id.nested);
-        nestedFragment = findViewById(R.id.nested_fragment);
+        Button nested = findViewById(R.id.nested);
+        Button nestedFragment = findViewById(R.id.nested_fragment);
+        Button wrapRv = findViewById(R.id.wrap_rv);
         nested.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -33,6 +29,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, NestedFragmentActivity.class));
+            }
+        });
+        wrapRv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, WrapRvActivity.class));
             }
         });
     }

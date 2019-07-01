@@ -3,7 +3,7 @@
 [ ![Download](https://api.bintray.com/packages/hzwsunshine/maven/NestedWebViewRecyclerViewGroup/images/download.svg) ](https://bintray.com/hzwsunshine/maven/NestedWebViewRecyclerViewGroup/_latestVersion)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-NestedWebViewRecyclerViewGroup 是 WebView 和 RecyclerView 的嵌套控件，用于经典的上面是 WebView 显示的文章，下面是 RecyclerView 显示的评论的文章详情页结构中，可以实现 WebView 和 RecyclerView 的无缝滑动切换，也提供 WebView 区域和 RecyclerView 区域的上下显示切换。
+NestedWebViewRecyclerViewGroup 是 WebView 和 RecyclerView 的嵌套控件，用于经典的上面是 WebView 显示的文章，下面是 RecyclerView 显示的评论的文章详情页结构中，可以实现 WebView 和 RecyclerView 的无缝滑动切换，也提供 WebView 区域和 RecyclerView 区域的上下显示切换。</br>
 NestedWebViewRecyclerViewGroup 的控件高度为该控件的屏幕可见高度，内容高度为 WebView 的控件高度和 RecyclerView 的控件高度之和，占用内存小，滑动流畅。
 
 相关技术点参考：[NestedScrolling：文章详情页的实现](https://blog.csdn.net/hzwailll/article/details/89854692)
@@ -61,8 +61,9 @@ NestedWebViewRecyclerViewGroup 的控件高度为该控件的屏幕可见高度�
         </android.support.v7.widget.RecyclerView>
         
     </com.hzw.nested.NestedWebViewRecyclerViewGroup>
-
-    也支持动态的添加 NestedScrollWebView 和 RecyclerView，具体请查看Demo
+    
+    ***
+    <也支持动态的添加 NestedScrollWebView 和 RecyclerView，具体请查看Demo>
 ```
 
 
@@ -102,15 +103,8 @@ setRecyclerView(RecyclerView recyclerView)
 
 
 **使用时请注意**：
-1. 请为使用到该控件的 Activity 设置以下主题，避免 ActionMode 向下挤压布局，造成该控件的高度发生变化
-```xml
-    <item name="windowActionModeOverlay">true</item>
-    <item name="android:windowActionModeOverlay">true</item>
-```
-2. NestedWebViewRecyclerViewGroup 只能包含两个子View： NestedScrollWebView 
+1. NestedWebViewRecyclerViewGroup 只能包含两个子View： NestedScrollWebView 
 和 RecyclerView 或包含它们两者的ViewGroup，具体可查看Demo
-
-3. 当 NestedWebViewRecyclerViewGroup 的高度发生变化时，请调用 requestLayout() 方法重新测量布局
 
 
 </br></br>

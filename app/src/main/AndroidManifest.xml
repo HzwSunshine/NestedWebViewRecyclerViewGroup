@@ -13,7 +13,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name="com.hzw.nested.example.MainActivity"
+            android:name=".MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,16 +22,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name="com.hzw.nested.example.NestedFragmentActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/ArticleTheme" />
-
+            android:name=".NestedFragmentActivity"
+            android:screenOrientation="portrait" />
         <activity
-            android:name="com.hzw.nested.example.NestedActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/ArticleTheme" />
+            android:name=".NestedActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".WrapRvActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

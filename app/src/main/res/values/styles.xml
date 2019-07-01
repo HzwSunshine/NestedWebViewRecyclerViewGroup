@@ -8,8 +8,4 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="ArticleTheme" parent="AppTheme">
-        <item name="windowActionModeOverlay">true</item>
-        <item name="android:windowActionModeOverlay">true</item>
-    </style>
 </resources>

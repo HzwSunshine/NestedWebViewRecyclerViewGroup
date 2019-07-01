@@ -147,6 +147,8 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
     }
 
     private int getMaxScrollY() {
+        //maxScrollY==0说明RV高度为0
+        //maxScrollY<0说明内容不足父控件高度
         maxScrollY = totalHeight - getMeasuredHeight();
         maxScrollY = maxScrollY < 0 ? 0 : maxScrollY;
         return maxScrollY;
@@ -212,8 +214,11 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
             }
         }
         if (webView != null) {
-            topHeight = webView.getHeight();
-            resetWebViewHeight();
+            if (topHeight > 0 && topHeight < getMeasuredHeight()) {
+                resetWebViewHeight();
+            } else {
+                topHeight = webView.getHeight();
+            }
             super.requestLayout();
         }
     }
@@ -496,12 +501,15 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (scrollbar == null && listener == null || webView == null || isSwitching || maxScrollY == 0) {
+        if (scrollbar == null && listener == null || webView == null || isSwitching) {
             return;
         }
         int webViewContentHeight = getWebViewContentHeight();
         if (recyclerView == null || webViewContentHeight == 0) return;
         int totalHeight = webViewContentHeight + getRVContentHeight();
+        if (totalHeight < getHeight()) {
+            return;
+        }
         int scrollY = getCurrentScrollY();
         if (scrollbar != null) {
             scrollbar.setScrollBar(totalHeight, this.getScrollY(), scrollY);
