@@ -32,6 +32,13 @@
     </com.hzw.nested.NestedWebViewRecyclerViewGroup>
 
     <View
+        android:id="@+id/changeView"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:visibility="gone"
+        android:background="@color/colorAccent" />
+
+    <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:background="#E0E0E0" />
@@ -52,6 +59,22 @@
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
             android:text="隐藏显示RV"
+            android:textColor="#333333"
+            android:textSize="12sp" />
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="#E0E0E0" />
+
+        <TextView
+            android:id="@+id/tv_height"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:text="父高度"
             android:textColor="#333333"
             android:textSize="12sp" />
 

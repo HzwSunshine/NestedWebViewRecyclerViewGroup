@@ -32,6 +32,7 @@ public class WrapRvActivity extends AppCompatActivity implements View.OnClickLis
         addItem.setOnClickListener(this);
         deleteItem.setOnClickListener(this);
         findViewById(R.id.hide_rv).setOnClickListener(this);
+        findViewById(R.id.tv_height).setOnClickListener(this);
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(manager);
@@ -68,6 +69,14 @@ public class WrapRvActivity extends AppCompatActivity implements View.OnClickLis
                     recyclerView.setVisibility(View.GONE);
                 } else {
                     recyclerView.setVisibility(View.VISIBLE);
+                }
+                break;
+            case R.id.tv_height:
+                View change = findViewById(R.id.changeView);
+                if (change.getVisibility() == View.VISIBLE) {
+                    change.setVisibility(View.GONE);
+                } else {
+                    change.setVisibility(View.VISIBLE);
                 }
                 break;
         }

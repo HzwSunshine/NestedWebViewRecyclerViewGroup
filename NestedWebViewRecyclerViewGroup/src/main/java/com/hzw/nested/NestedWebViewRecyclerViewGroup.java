@@ -410,7 +410,7 @@ public class NestedWebViewRecyclerViewGroup extends ViewGroup implements NestedS
     }
 
     private boolean isParentCenter() {
-        return getScrollY() > 0 && getScrollY() < topHeight;
+        return getScrollY() > 0 && getScrollY() < webView.getHeight();
     }
 
     @Override
