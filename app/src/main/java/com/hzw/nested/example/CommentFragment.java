@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 public class CommentFragment extends Fragment {
 
     private RecyclerView recyclerView;
+    private RvAdapter adapter;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -32,10 +33,27 @@ public class CommentFragment extends Fragment {
         LinearLayoutManager manager = new LinearLayoutManager(getActivity());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(manager);
-        recyclerView.setAdapter(new RvAdapter());
+        adapter = new RvAdapter(true);
+        recyclerView.setAdapter(adapter);
     }
 
     public RecyclerView getRecyclerView() {
         return recyclerView;
+    }
+
+    public void addItem() {
+        adapter.addItem();
+    }
+
+    public void deleteItem() {
+        adapter.deleteItem();
+    }
+
+    public void hide(){
+        if (recyclerView.getVisibility() == View.VISIBLE) {
+            recyclerView.setVisibility(View.GONE);
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+        }
     }
 }

@@ -27,7 +27,7 @@
         <FrameLayout
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
         </FrameLayout>
     </com.hzw.nested.NestedWebViewRecyclerViewGroup>
@@ -44,13 +44,17 @@
         android:background="#ffffff"
         android:visibility="visible">
 
-        <EditText
-            android:id="@+id/et_comment"
+        <TextView
+            android:id="@+id/hide_rv"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:textColor="#E0E0E0"
-            android:textSize="14sp" />
+            android:gravity="center"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:text="隐藏显示RV"
+            android:textColor="#333333"
+            android:textSize="12sp" />
 
         <View
             android:layout_width="0.5dp"
@@ -74,13 +78,29 @@
             android:background="#E0E0E0" />
 
         <TextView
-            android:id="@+id/tv_last_read"
+            android:id="@+id/addItem"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
-            android:text="上次阅读"
+            android:text="加Item"
+            android:textColor="#333333"
+            android:textSize="12sp" />
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="#E0E0E0" />
+
+        <TextView
+            android:id="@+id/deleteItem"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:text="减Item"
             android:textColor="#333333"
             android:textSize="12sp" />
     </LinearLayout>

@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
@@ -14,6 +16,7 @@ import com.hzw.nested.NestedWebViewRecyclerViewGroup;
 public class NestedFragmentActivity extends AppCompatActivity implements View.OnClickListener {
 
     private NestedWebViewRecyclerViewGroup parent;
+    private CommentFragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,14 +24,17 @@ public class NestedFragmentActivity extends AppCompatActivity implements View.On
         setContentView(R.layout.activity_nested_fragment);
         parent = findViewById(R.id.nest_parent);
         TextView tvComment = findViewById(R.id.tv_comment);
-        TextView tvLastRead = findViewById(R.id.tv_last_read);
+        TextView addItem = findViewById(R.id.addItem);
+        TextView deleteItem = findViewById(R.id.deleteItem);
         tvComment.setOnClickListener(this);
-        tvLastRead.setOnClickListener(this);
+        addItem.setOnClickListener(this);
+        deleteItem.setOnClickListener(this);
+        findViewById(R.id.hide_rv).setOnClickListener(this);
         initWebView();
 
         //评论是一个以Fragment的方式存在
         FragmentManager manager = getSupportFragmentManager();
-        CommentFragment fragment = (CommentFragment) manager.findFragmentByTag(CommentFragment.class.getName());
+        fragment = (CommentFragment) manager.findFragmentByTag(CommentFragment.class.getName());
         FragmentTransaction transaction = manager.beginTransaction();
         if (fragment == null) {
             fragment = new CommentFragment();
@@ -48,6 +54,13 @@ public class NestedFragmentActivity extends AppCompatActivity implements View.On
         //2. 如果你还有更特殊的用法，当 NestedWebViewRecyclerViewGroup 在界面显示时都无法获取到 RecyclerView
         //那么可以调用 NestedWebViewRecyclerViewGroup 的 setRecyclerView 方法，将两者关联
         //parent.setRecyclerView(your recyclerView);
+
+        parent.post(new Runnable() {
+            @Override
+            public void run() {
+                Log.i("xxx", "run: parent");
+            }
+        });
     }
 
     @Override
@@ -69,11 +82,21 @@ public class NestedFragmentActivity extends AppCompatActivity implements View.On
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_comment:
-                parent.switchView(7);
+                parent.switchView(0);
                 break;
-            case R.id.tv_last_read:
-                int last = ReadUtil.getRead(this);
-                parent.scrollToPosition(last);
+            case R.id.addItem:
+                fragment.addItem();
+                break;
+            case R.id.deleteItem:
+                fragment.deleteItem();
+                break;
+            case R.id.hide_rv:
+                View view = findViewById(R.id.fragment_container);
+                if (view.getVisibility() == View.VISIBLE) {
+                    view.setVisibility(View.GONE);
+                } else {
+                    view.setVisibility(View.VISIBLE);
+                }
                 break;
         }
     }

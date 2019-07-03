@@ -21,7 +21,7 @@ public class NestedActivity extends AppCompatActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nested);
-        RecyclerView recyclerView = findViewById(R.id.nest_rv);
+        //RecyclerView recyclerView = findViewById(R.id.nest_rv);
         parent = findViewById(R.id.nest_parent);
         TextView tvComment = findViewById(R.id.tv_comment);
         TextView tvLastRead = findViewById(R.id.tv_last_read);
@@ -29,8 +29,8 @@ public class NestedActivity extends AppCompatActivity implements View.OnClickLis
         tvLastRead.setOnClickListener(this);
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(manager);
-        recyclerView.setAdapter(new RvAdapter());
+//        recyclerView.setLayoutManager(manager);
+//        recyclerView.setAdapter(new RvAdapter());
         initWebView();
     }
 

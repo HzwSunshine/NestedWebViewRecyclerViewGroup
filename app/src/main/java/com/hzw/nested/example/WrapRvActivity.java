@@ -49,7 +49,7 @@ public class WrapRvActivity extends AppCompatActivity implements View.OnClickLis
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new WebViewClient());
         webView.setWebChromeClient(new WebChromeClient());
-        webView.loadUrl("https://github.com/HzwSunshine/NestedWebViewRecyclerViewGroup");
+        webView.loadUrl("https://www.cnblogs.com/xxxxxx.html");
     }
 
     @Override

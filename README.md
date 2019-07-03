@@ -64,13 +64,17 @@ NestedWebViewRecyclerViewGroup 的控件高度为该控件的屏幕可见高度�
     
     ***
     <也支持动态的添加 NestedScrollWebView 和 RecyclerView，具体请查看Demo>
+    ***
+    <也可以只添加 NestedScrollWebView 或者它的Parent>
 ```
 
 
 **code**
 
 ```java
-//WebView的内容高度不满一屏时，手动设置正确高度
+//如果WebView为MatchParent并且内容存在不满一屏的情况，需要手动设置WebView的内容高度
+//如果WebView为WrapContent时，通常不需要设置，如果存在高度不准确的情况，可以手动设置
+//WebView的内容高度可让前端同学通过js传递给你
 setWebViewContentHeight(int height) ; 
 
 //设置滑动监听
@@ -93,7 +97,7 @@ switchView(int rvPosition)
 //和 NestedWebViewRecyclerViewGroup 关联起来
 
 //1. 在 NestedWebViewRecyclerViewGroup 的内部如果在解析布局文件时，如果没有找到 RecyclerView ，
-//那么在界面显示时会尝试再次获取 RecyclerView ，这种情况不需要你再做额外的事情
+//那么在界面显示时会尝试再次获取 RecyclerView ，这种情况不需要你再做额外的事情，通常情况下不需要此设置
 
 //2. 如果你还有更特殊的用法，情况1 任然没有找到你的 RecyclerView
 //那么可以调用setRecyclerView 方法，将两者关联
@@ -103,8 +107,10 @@ setRecyclerView(RecyclerView recyclerView)
 
 
 **使用时请注意**：
-1. NestedWebViewRecyclerViewGroup 只能包含两个子View： NestedScrollWebView 
+1. NestedWebViewRecyclerViewGroup 最多只能包含两个子View： NestedScrollWebView 
 和 RecyclerView 或包含它们两者的ViewGroup，具体可查看Demo
+
+2. RecyclerView 或它的ViewGroup是非必须的
 
 
 </br></br>
